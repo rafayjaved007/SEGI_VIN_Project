@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Search Page</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+    <hr/>
+    {% if vehicle %}
+        <h3 style="margin:auto">Vehicle Information</h3>
+        <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 5px;
+          text-align: left;
+        }
+        </style>
+        <br>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Make</th><td>{{ vehicle.make }}</td>
+                </tr>
+                <tr>
+                    <th>Model</th><td>{{ vehicle.model }}</td>
+                </tr>
+                <tr>
+                    <th>Year</th><td>{{ vehicle.year }}</td>
+                </tr>
+                <tr>
+                    <th>Engine</th><td>{{ vehicle.engine }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+    {% endif %}
+    {% if bapparts or valeo_parts %}
+        <h3>Available Parts</h3>
+        <style>
+            .partnumber:not(:last-child) {
+                border-right: 1px solid black;
+                padding-right: 3px;
+            }
+        </style>
+        {% if bapparts %}
+            <h4>BuyAutoParts</h4>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Model</th><th>Engine</th><th>Part Numbers</th><th>Inventory</th>
+                    </tr>
+                    {% for part in bapparts %}
+                        <tr>
+                            <td>{{ part.model }}</td>
+                            {% if part.engine %} <td>{{ part.engine }}</td> {% else %} <td>Default</td> {% endif %}
+                            <td>
+                                {% for part_number in part.part_numbers %}
+                                    <a class="partnumber" href="https://www.google.com/search?q={{part_number}}&tbm=isch" target="_blank">{{ part_number }}</a>
+                                {% endfor %}
+                            </td>
+                            <td>{{ part.inventory }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        {% if valeoparts %}
+            <h4>BuyAutoParts</h4>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Model</th><th>Engine</th><th>Part Numbers</th><th>Inventory</th>
+                    </tr>
+                    {% for part in valeoparts %}
+                        <tr>
+                            <td>{{ part.model }}</td>
+                            {% if part.engine %} <td>{{ part.engine }}</td> {% else %} <td>Default</td> {% endif %}
+                            <td>
+                                {% for part_number in part.part_numbers %}
+                                    <a class="partnumber" href="https://www.google.com/search?q={{part_number}}&tbm=isch" target="_blank">{{ part_number }}</a>
+                                {% endfor %}
+                            </td>
+                            <td>{{ part.inventory }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% else%}
+        {% if vehicle %}
+            <p style="color: red">Couldn't find any part number matching this criteria</p>
+        {% endif %}
+    {% endif %}
+
+
+{% endblock content %}
